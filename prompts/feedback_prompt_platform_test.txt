@@ -1,0 +1,21 @@
+Consider the below variable source-code file which uses conditional compilation directives to derive different variants out of a single file.
+
+```c
+{{replace with source-code file causing test error}}
+
+```
+
+When the following unit test is run on the above file for variant `{{replace with variant for which error occurs}}`, test `{{replace with failed test name}}` fails with the following log.
+
+```c++
+{{replace with test file with error}}
+
+```
+
+Here is the log of the unit test
+
+```bash
+{{replace with failed test execution log}}
+
+```
+Suggest changes to only the C source-code file and please provide the complete file in the output.

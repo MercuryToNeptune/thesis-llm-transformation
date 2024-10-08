@@ -1,0 +1,70 @@
+You need to act as a migrator for CMakeLists.txt files of cloned variants by generating a single CMakeLists.txt file which can be used to build a SPL constructed from these cloned variants.
+Our goal is to build the already available SPL generated from these cloned variants using the CMakeLists.txt file which you will generate. 
+
+Context:
+The already available SPL is present in the "spl_output" directory.
+CMakeLists.txt file which you generate will be stored at the root level of this spl_output directory.
+Cloned variants are called: blinking_light, color_light, color_light_green and dimmable_light.
+Unit tests for each variant are located in the relative path - `test_temp/{variant_name}/{unit_test}.cpp`.
+
+Instructions:
+Below are the instructions you need to follow.
+1. Executable for a variant should only compile the relative paths needed by it and no other paths or sources.
+	- blinking_light variant needs the following files. src/blinking_light.c, src/console_interface.c, src/keyboard_interface.c, src/light_controller.c, src/main.c, src/main_control_knob.c, src/power_signal_processing.c, src/rte.c, src/blinking_light.h, src/console_interface.h, src/keyboard_interface.h, src/light_controller.h, src/main_control_knob.h, src/power_signal_processing.h, src/rte.h
+	- color_light variant needs the following files. src/light.c, src/console_interface.c, src/keyboard_interface.c, src/light_controller.c, src/main.c, src/power_signal_processing.c, src/rte.c, src/light.h, src/console_interface.h, src/keyboard_interface.h, src/light_controller.h, src/power_signal_processing.h, src/rte.h
+	- color_light_green variant needs the following files. src/light.c, src/console_interface.c, src/keyboard_interface.c, src/light_controller.c, src/main.c, src/power_signal_processing.c, src/rte.c, src/light.h, src/console_interface.h, src/keyboard_interface.h, src/light_controller.h, src/power_signal_processing.h, src/rte.h
+	- dimmable_light variant needs the following files. src/dimmable_light.c, src/console_interface.c, src/keyboard_interface.c, src/light_controller.c, src/main.c, src/power_signal_processing.c, src/brightness_controller.c, src/main_control_knob.c, src/rte.c, src/dimmable_light.h, src/console_interface.h, src/keyboard_interface.h, src/light_controller.h, src/power_signal_processing.h, src/rte.h, src/brightness_controller.h, src/main_control_knob.c
+2. Generated CMakeLists.txt file should rename all the executables so that they follow a consistent pattern
+3. Order in which the statements appear should remain same as that of the individual variant's files
+4. Generated CMakeLists.txt file should conditionally combine the contents of each variant's CMakeLists.txt file at places where the code is different
+5. For the code statements which are the same across the variants, the order in which they appear relative to the statements before and after them should be preserved
+6. Statements setting any linker flags should always be included in the generated file
+7. Generated CMakeLists.txt file should accept an argument from the command-line.
+8. This argument from the command-line should be called Variant_name.
+9. This argument should accept only the possible variant names specified above as inputs. 
+10. The upper-case version of this argument should be made available to all the files using `add_compile_definitions({Variant_name})` where `{Variant_name}` could be the uppercase version of BLINKING_LIGHT, COLOR_LIGHT, COLOR_LIGHT_GREEN and DIMMABLE_LIGHT.
+11. Generated CMakeLists.txt file should compile all the executables listed in the input CMake files.
+12. `main.c` file should be excluded from test executables as shown in the CMakeLists of input variants. 
+
+Example:
+Below is an example showing how the build file for spl can be generated using the build files from each variant. 
+```cmake
+// file from variant1
+cmake_minimum_required(VERSION 3.10)
+project(HelloWorld) 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True) 
+add_executable(hello_world "hello_world/main.cpp")
+
+// file from variant2
+cmake_minimum_required(VERSION 3.10)
+project(HelloUniverse) 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True) 
+add_executable(hello_universe "hello_universe/main.cpp")
+
+// expected spl cmakefile
+cmake_minimum_required(VERSION 3.10)
+project(SPL) 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True) 
+if(NOT DEFINED Variant_name)
+  message(FATAL_ERROR "Please specify a Variant_name: blinking_light, color_light, or dimmable_light")
+endif()
+set(valid_variants "hello_world" "hello_universe")
+list(FIND valid_variants ${Variant_name} index)
+if(${index} EQUAL -1)
+  message(FATAL_ERROR "Invalid Variant_name specified")
+endif()
+if(${Variant_name} STREQUAL "hello_world")
+	add_executable(hello_world "hello_world/main.cpp")
+elseif(${Variant_name} STREQUAL "hello_universe")
+	add_executable(hello_universe "hello_universe/main.cpp")
+endif()
+```
+
+Input: 
+Below are the CMakeLists.txt files from cloned variants. 
+```cmake
+{{replace with variable-CMakeLists.txt}}
+```

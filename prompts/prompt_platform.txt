@@ -1,0 +1,192 @@
+You need to act as an SPL-generator which can convert the input cloned variants to a SPL using conditional compilation directives.
+Our goal is to migrate several cloned software variants to SPL.
+
+Context:
+The cloned software variants are written in C. 
+Names of the four cloned variants (`{variant_name}`) are: blinking_light, color_light, dimmable_light and color_light_green.
+
+Instructions:
+Below are the instructions you need to follow.
+2. Code blocks enclosed with `// Start-Root-{variant_name}` and `// End-Root-{variant_name}` don't belong to any particular feature but rather to the root node of the feature model. 
+3. Code blocks enclosed with `// Start-{feature_name}` and `// End-{feature_name}` denote that the particular code-block is variable and influences the feature, where `{feature_name}` is the name of the feature the code-block influences. 
+4. Both of the above types of code-blocks should be merged using conditional directives.
+5. At the top of the file, conditional directives should select the appropriate features based on uppercasing the input `{variant_name}` which is made available globally during compilation. 
+6. Expressions of all other generated conditional directives should only contain `{feature_name}` or any logical combinations of them. 
+7. For any other code-blocks which are labelled and which don't follow the `// Start-{FeatureName}`,  `// End-{FeatureName}`, `// Start-Root-{variant_name}` or `// End-Root-{variant_name}` format, don't merge code using conditional directives.
+8. Variable code-blocks in the generated file should contain the exact same `{featureName}` in its expression for the labelled code-blocks as in the input files for the cloned variants.
+9. Don't create any new variables.
+10. Don't replace any hard-coded values with new variables or new pre-processor directives which don't exist already in the cloned variants. 
+
+Example:
+Below is the example of how a SPL file can be created from a set of three cloned variants.
+```c
+// Content from small variant
+#include <stdio.h>
+
+int main() {
+ 
+	// Start-ps
+	printf("Hello, world!\n");
+	printf("PS. Please no bs");
+	// End-ps
+    
+    return 0;
+}
+
+// Content from large variant
+#include <stdio.h>
+
+int main() {
+    // Start-universe
+    char message[] = "Hello, universe!";
+	printf("%s\n", message);
+    // End-universe
+    
+    return 0;
+}
+
+// Content from medium variant
+#include <stdio.h>
+
+int main() {
+    // Start-galaxy
+    char message[] = "Hello, galaxy!";
+	printf("%s\n", message);
+    // End-galaxy
+    
+    return 0;
+}
+
+// Content from desired SPL file
+#include <stdio.h>
+
+#if defined(SMALL)
+#define PS
+#elif defined(LARGE)
+#define UNIVERSE
+#elif defined(MEDIUM)
+#define GALAXY
+#endif
+
+int main(){
+
+	#if defined(PS)
+		printf("Hello, world!\n");
+		printf("PS. Please no bs");
+	#endif
+	
+	#if defined(UNIVERSE)
+		char message[] = "Hello, universe!";
+		printf("%s\n", message);
+	#endif
+	
+	#if defined(GALAXY)
+		char message[] = "Hello, galaxy!";
+		printf("%s\n", message);
+	#endif
+
+	
+	return 0;
+}
+```
+Below is another example of how SPL can be created from a set of cloned variants
+```c
+// Content from micro variant
+#include <stdio.h>
+
+int main() {
+ 
+	// Start-brewing_dynamic
+	int startupCode = 15;
+	// End-brewing_dynamic
+    
+	printf("%d\n", startupCode);
+	
+	// Start-brewing_rate_auto
+	int brew_rate = 100;
+	// End-brewing_rate_auto
+	
+	printf("%d\n", brew_rate);
+	
+    return 0;
+}
+
+// Content from std variant
+#include <stdio.h>
+
+int main() {
+
+	// Start-brewing_dynamic
+	int startupCode = getStartupCode();
+	// End-brewing_dynamic
+    
+	printf("%d\n", startupCode);
+	
+	// Start-brewing_rate_auto
+	int brew_rate = 100;
+	// End-brewing_rate_auto
+	
+	printf("%d\n", brew_rate);
+	
+    return 0;
+}
+
+// Content from premium variant
+#include <stdio.h>
+
+int main() {
+
+	// Start-brewing_dynamic
+	int startupCode = getStartupCode();
+	// End-brewing_dynamic
+    
+	printf("%d\n", startupCode);
+	
+	// Start-brewing_rate_auto
+	int brew_rate = getBrewingRate();
+	// End-brewing_rate_auto
+	
+	printf("%d\n", brew_rate);
+	
+    return 0;
+}
+
+// Content from desired SPL file
+#include <stdio.h>
+
+#if defined(MICRO)
+#elif defined(STD)
+#define BREWING_DYNAMIC
+#elif defined(PREMIUM)
+#define BREWING_DYNAMIC
+#define BREWING_RATE_AUTO
+#endif
+
+int main(){
+
+	#if defined(BREWING_DYNAMIC)
+		int startupCode = getStartupCode();
+	#else
+		int startupCode = 15;
+	#endif
+	
+	printf("%d\n", startupCode);
+	
+	#if defined(BREWING_RATE_AUTO)
+		int brew_rate = getBrewingRate();
+	#else 
+		int brew_rate = 100;		
+	#endif
+
+	printf("%d\n", brew_rate);
+	
+	return 0;
+}
+```
+
+Input: 
+Below are the input files for the cloned variants. 
+```c
+{{replace with variable file content}}
+
+```

@@ -1,0 +1,30 @@
+You need to fix a CMakeLists.txt file, which was created using conditional statements from the CMakeLists.txt files of a set of cloned variants, so that it can be successfully built.
+Our goal is to ensure that the variable source-code file can actually be compiled without any errors. 
+   
+Context: 
+Source code file is written in C. 
+Error occurs when building the {{replace with variant name which error occurs}} variant.
+Unit tests for each variant are located in the relative path - `test_temp/{variant_name}/{unit_test}.cpp`.
+
+Instructions:
+Below are the instructions you need to follow.
+1. Make sure that each variant executable has access to only the following files during its compilation.
+	- blinking_light variant needs the following files. src/blinking_light.c, src/console_interface.c, src/keyboard_interface.c, src/light_controller.c, src/main.c, src/main_control_knob.c, src/power_signal_processing.c, src/rte.c, src/blinking_light.h, src/console_interface.h, src/keyboard_interface.h, src/light_controller.h, src/main_control_knob.h, src/power_signal_processing.h, src/rte.h
+	- color_light variant needs the following files. src/light.c, src/console_interface.c, src/keyboard_interface.c, src/light_controller.c, src/main.c, src/power_signal_processing.c, src/rte.c, src/light.h, src/console_interface.h, src/keyboard_interface.h, src/light_controller.h, src/power_signal_processing.h, src/rte.h
+	- color_light_green variant needs the following files. src/light.c, src/console_interface.c, src/keyboard_interface.c, src/light_controller.c, src/main.c, src/power_signal_processing.c, src/rte.c, src/light.h, src/console_interface.h, src/keyboard_interface.h, src/light_controller.h, src/power_signal_processing.h, src/rte.h
+	- dimmable_light variant needs the following files. src/dimmable_light.c, src/console_interface.c, src/keyboard_interface.c, src/light_controller.c, src/main.c, src/power_signal_processing.c, src/brightness_controller.c, src/main_control_knob.c, src/rte.c, src/dimmable_light.h, src/console_interface.h, src/keyboard_interface.h, src/light_controller.h, src/power_signal_processing.h, src/rte.h, src/brightness_controller.h, src/main_control_knob.c
+2. `main.c` file should be excluded from test executables as shown in the CMakeLists of input variants. 
+3. Naming of all executables and targets should be consistent with `{Variant_name}` command-line argument.
+
+Input:
+Below is the input CMakeLists.txt file which needs to be fixed.
+```cmake
+{{replace with llm-create CMakeLists}}
+
+```
+
+Below is the error that occurs when building the above file. 
+```bash
+{{replace with error msg encountered during build}}
+
+```

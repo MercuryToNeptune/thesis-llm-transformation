@@ -1,0 +1,34 @@
+You need to fix a variable source-code file, which was created using conditional compilation directives from a set of cloned variants, so that it can be successfully built.
+Our goal is to ensure that the variable source-code file can actually be compiled without any errors. 
+
+Context: 
+Source code file is written in C. 
+Error occurs when building the {{replace with variant name which error occurs}} variant.
+
+Instructions:
+Below are the instructions you need to follow.
+1. You should only modify code related to {{replace with variant name which error occurs}} variant, because with this variant we are getting an error.
+2. Fix all syntax errors in the variable source-code file
+3. Add any missing statements from the set of cloned variants to the variable source-code file which could have been missed during the initial creation
+4. Reorder any existing statements in the variable file which could resolve the error
+5. Your response should consist of only the variable source-code file and nothing else. 
+6. The source-code should be properly formatted and indented
+
+Input: 
+Below is the set of cloned variants from which the variable file was created
+```c
+{{replace with cloned variable file}}
+
+```
+
+Below is the variable source-code file
+```c
+{{replace with variable file with error}}
+
+```
+
+Below is the command used for building and the error that occurs
+```bash
+{{replace with build error}}
+
+```

@@ -1,0 +1,68 @@
+cmake_minimum_required(VERSION 3.10)
+
+# Set the project name and version
+project(LightController VERSION 1.0)
+
+# Specify the C standard
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED True)
+
+# Set the C++ standard to C++20
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+# Add the source files, excluding test files
+file(GLOB_RECURSE SOURCES "src/**/*.c")
+file(GLOB_RECURSE HEADERS "src/**/*.h")
+
+# Exclude main.c regardless of its location
+foreach(file ${SOURCES})
+    if("${file}" MATCHES ".*/main\\.c$")
+        list(REMOVE_ITEM SOURCES ${file})
+    endif()
+endforeach()
+
+# Command-line argument for the variant name
+if(NOT DEFINED Variant_name)
+    message(FATAL_ERROR "Variant_name argument must be provided. Example: cmake -DVariant_name=VARIANT_1 ..")
+endif()
+
+string(TOLOWER "${Variant_name}" Variant_name_lower)
+
+# Add compile definition for the variant name
+add_compile_definitions(${Variant_name})
+
+# Add the executable
+add_library(SPL STATIC ${SOURCES} ${HEADERS})
+
+# Include directories
+target_include_directories(SPL PRIVATE
+    test-temp/headers
+)
+
+enable_testing()
+
+# fff.h gives the error that two defintions of mocked function exists otherwise
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /FORCE:MULTIPLE")
+
+# Collect all .cpp files from the directory test-temp/${Variant_name_lower}
+file(GLOB TEST_SOURCES "test-temp/${Variant_name_lower}/*.cpp")
+
+add_executable(
+  ${Variant_name_lower}_test
+  ${TEST_SOURCES} 
+)
+
+# Include directories
+target_include_directories(${Variant_name_lower}_test PRIVATE
+    test-temp/headers
+    "C:/Users/aatra/vcpkg/installed/x64-windows/include"
+)
+
+target_link_libraries(${Variant_name_lower}_test SPL "C:/Users/aatra/vcpkg/installed/x64-windows/lib/gtest.lib" "C:/Users/aatra/vcpkg/installed/x64-windows/lib/manual-link/gtest_main.lib")
+
+# otherwise this error: unknown file: error: SEH exception with code 0xc0000005 thrown in the test body.
+target_compile_definitions(${Variant_name_lower}_test PRIVATE GTEST_LINKED_AS_SHARED_LIBRARY=1)
+
+include(GoogleTest)
+gtest_discover_tests(${Variant_name_lower}_test)
