@@ -5,6 +5,10 @@
   "version": "1.0.0",
   "publisher": "IAS",
   "icon": "images/images.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MercuryToNeptune/thesis-llm-transformation"
+  },
   "engines": {
     "vscode": "^1.93.1"
   },
