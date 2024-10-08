@@ -4,7 +4,7 @@ Successful transformation through this extension guarantees:
 ✅ Error-free Compilation of all Variants  
 ✅ Functionally Correct Platform
 
-![Successful Transformation Screenshot](/images/images.png)
+![Successful Transformation Screenshot](/images/extension3.png)
 
 ## Features
 
