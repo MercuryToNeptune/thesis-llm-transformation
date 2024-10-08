@@ -1,6 +1,6 @@
 {
   "name": "transform-cloned-variants-into-a-unified-platform",
-  "displayName": "Transform cloned variants into a unified platform",
+  "displayName": "Transform Cloned Variants into a Unified Platform",
   "description": "This extension transforms the cloned variants into a unified platform. It also makes sure that all variants out of the generated platform can be compiled and all tests can run successfully on these variants.",
   "version": "1.0.0",
   "publisher": "IAS",
